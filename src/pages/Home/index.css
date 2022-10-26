@@ -1,0 +1,14 @@
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.body {
+  height: 100vh;
+  flex: 1;
+  display: flex;
+}
+.bottom {
+  flex: 0;
+  border-top: 1px solid #eee;
+}
