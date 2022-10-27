@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Grid, Swiper} from "antd-mobile";
 import './index.css'
-import {reqGroups, reqSwiper} from "../../../api";
+import {reqCity, reqGroups, reqNews, reqSwiper} from "../../../api";
 import {BASE_URL} from "../../../utils/constants";
 import icon1 from '../../../assets/icon/Household.png'
 import icon2 from '../../../assets/icon/peoples.png'
 import icon3 from '../../../assets/icon/kehuditu.png'
 import icon4 from '../../../assets/icon/house-add.png'
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import {CaretDownOutlined, SearchOutlined} from "@ant-design/icons";
+import { RiRoadMapLine } from "react-icons/ri";
 
 
 function Index(props) {
@@ -15,8 +17,38 @@ function Index(props) {
     const [swiper, setSwiper] = useState([])
     // 租房小组
     const [groups, setGroups] = useState([])
+    // 最新资讯
+    const [news, setNews] = useState([])
+    // 经纬度
+    const [locations, setLocations] = useState('')
+    // 城市
+    const [city, setCity] = useState('')
+    // 选择的城市
+    const [choiceCity, setChoiceCity] = useState('')
     // 使用路由跳转
     const navigate = useNavigate()
+
+    // 路由传的参数
+    const state = useLocation().state
+
+    // 点击location选择位置后的路由跳转
+    const activeHouseList = (value) => {
+        navigate(value,{state:{city}})
+    }
+
+    // 点击搜索地址后的跳转到search
+    const activeSearch = (value) => {
+        navigate(value)
+    }
+    // 点击地图图片后跳转到map
+    const activeMap = (value) => {
+        navigate(value)
+    }
+
+    // 设置导航菜单点击后跳转路由地址
+    const setRouteActive = (value) => {
+        navigate(value)
+    }
 
     // 获取轮播图
     const getSwiper = () => {
@@ -63,11 +95,6 @@ function Index(props) {
         },
     ]
 
-    // 设置导航菜单点击后跳转路由地址
-    const setRouteActive = (value) => {
-        navigate(value)
-    }
-
     // 遍历菜单导航
     const navItems = navs.map((item) => (
         <Grid.Item key={item.id} onClick={() => setRouteActive(item.path)}>
@@ -99,14 +126,87 @@ function Index(props) {
         </Grid.Item>
     ))
 
-    // 将要挂载时获取轮播图/租房小组
+    // 获取最新资讯
+    const getNews = () => {
+        reqNews('AREA%7C88cff55c-aaa4-e2e0').then((value) => {
+            const result = value.data
+            if (result.status === 200) {
+                setNews(result.body)
+            }
+        })
+    }
+
+    // 遍历最新资讯
+    const newsItems = news.map((item) => (
+        <div className='grid-news' key={item.id}>
+            <img src={BASE_URL + item.imgSrc} alt=""/>
+            <div className='news-text'>
+                <h2>{item.title}</h2>
+                <p>
+                    <span>{item.from}</span>
+                    <span>{item.date}</span>
+                </p>
+            </div>
+        </div>
+    ))
+
+    // 获取地理信息
+    navigator.geolocation.getCurrentPosition(position => {
+        setLocations(`${position.coords.longitude},${position.coords.latitude}`)
+    })
+
+    // 获取城市
+    const getCity = useCallback(() => {
+        if (locations) {
+            reqCity(locations,(err,data) => {
+                if (!err && data.status === '1'){
+                    const city = data.regeocode.addressComponent.city instanceof Array ? data.regeocode.addressComponent.province : data.regeocode.addressComponent.city
+                    const index = city.indexOf('市')
+                    setCity(city.slice(0,index))
+                }
+            })
+        }
+    },[locations])
+
+    // 地理位置改变调用获取城市
+    useEffect(() => {
+        getCity()
+    },[locations,getCity])
+
+    // 获取选择的城市
+    useEffect(() => {
+        if (state) {
+            setChoiceCity(state.city)
+        }
+    },[state])
+
+    // 将要挂载时获取轮播图/租房小组/最新资讯
     useEffect(() => {
         getSwiper()
         getGroups()
+        getNews()
     },[])
     return (
         <div>
+            {/*顶部搜索*/}
+            <div className='search'>
+                <div className='search-box'>
+                    <div className='location' onClick={() => {activeHouseList('/citylist')}}>
+                        <span className='name'>{state === null ? city : choiceCity}</span>
+                        <CaretDownOutlined />
+                    </div>
+                    <div className='from' onClick={() => {activeSearch('/search')}}>
+                        <SearchOutlined />
+                        <span>请输入小区或地址</span>
+                    </div>
+                    <div className='map-icon' onClick={() => {activeMap('/map')}}>
+                        <RiRoadMapLine />
+                    </div>
+                </div>
+            </div>
+            {/*轮播图*/}
             <Swiper
+                loop= 'true'
                 autoplay
                 className='swiper'
                 indicatorProps={{
@@ -115,9 +215,11 @@ function Index(props) {
             >
                 {items}
             </Swiper>
+            {/*菜单导航*/}
             <Grid columns={4} gap={8} className='grid'>
                 {navItems}
             </Grid>
+            {/*租房小组*/}
             <div className='group'>
                 <h3 className='group-top'>
                     租房小组
@@ -127,21 +229,11 @@ function Index(props) {
                     {groupItems}
                 </Grid>
             </div>
+            {/*最新资讯*/}
             <div className='news'>
                 <h3>最新资讯</h3>
                 <Grid columns={1}>
-                    <Grid.Item>
-                        <div className='grid-news'>
-                            <img src={BASE_URL + '/img/news/1.png'} alt=""/>
-                            <div className='news-text'>
-                                <h2>置业选择 | 安贞西里 三室一厅 河间的古雅别院</h2>
-                                <p>
-                                    <span>新华网</span>
-                                    <span>一周前</span>
-                                </p>
-                            </div>
-                        </div>
-                    </Grid.Item>
+                    {newsItems}
                 </Grid>
             </div>
         </div>
