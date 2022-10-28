@@ -43,11 +43,9 @@ function Home(props) {
 
         // 遍历tab返回参数
         const tabItems = (
-            <TabBar activeKey={pathname} onChange={value => setRouteActive(value)}>
-                {tabs.map(item => (
-                    <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
-                ))}
-            </TabBar>
+            tabs.map(item => (
+                <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+            ))
         )
     return (
         <div>
@@ -55,10 +53,11 @@ function Home(props) {
                 <div className='body'>
                     <Outlet/>
                 </div>
-                <div className='bottom'>
+                <TabBar className='bottom' activeKey={pathname} onChange={value => setRouteActive(value)}>
                     {tabItems}
-                </div>
+                </TabBar>
             </div>
+
         </div>
     );
 }

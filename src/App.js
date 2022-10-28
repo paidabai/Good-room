@@ -4,7 +4,7 @@ import indexRouter from "./routes";
 function App() {
   const elementRoute = useRoutes(indexRouter)
   return (
-    <div className="App">
+    <div style={{height: '100%'}}>
       {elementRoute}
     </div>
   );
