@@ -36,17 +36,34 @@ function Map(props) {
     },[getCityLatitudeAndLongitude,city])
 
     if (latitudeAndLongitude.length !== 0) {
-        AMapLoader.load({
+         AMapLoader.load({
             "key": `${MAP_KRY}`,              // 申请好的Web端开发者Key，首次调用 load 时必填
             "version": "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-            "plugins": [],           // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+            "plugins": ['AMap.Scale', 'AMap.ToolBar'],           // 需要使用的的插件列表，如比例尺'AMap.Scale'等
 
         }).then((AMap)=>{
-            new AMap.Map('container',{
+             let map = new AMap.Map('container',{
+                resizeEnable: true,
                 zoom: 11,//级别
                 center: latitudeAndLongitude,//中心点坐标
                 viewMode:'3D'//使用3D视图
             });
+             // 添加插件
+                map.addControl(new AMap.Scale())
+                map.addControl(new AMap.ToolBar())
+             // 添加文本覆盖物
+             let info = [];
+             info.push("<div class='input-card content-window-card'><div><img style=\"float:left;\" src=\" https://webapi.amap.com/images/autonavi.png \"/></div> ");
+             info.push("<div style=\"padding:7px 0px 0px 0px;\"><h4>高德软件</h4>");
+             info.push("<p class='input-item'>电话 : 010-84107000   邮编 : 100102</p>");
+             info.push("<p class='input-item'>地址 :北京市朝阳区望京阜荣街10号首开广场4层</p></div></div>");
+
+            // 创建 infoWindow 实例
+            let infoWindow = new AMap.InfoWindow({
+                 isCustom: true,  //使用自定义窗体
+                 content: info.join(""),  //传入 dom 对象，或者 html 字符串
+             });
+             infoWindow.open(map, map.getCenter());
         }).catch(e => {
             console.log(e);
         })
@@ -69,6 +86,7 @@ function Map(props) {
                 content='该城市暂无房源，请选择其他城市'
                 closeOnAction
                 onClose={() => {
+                    setVisible(false)
                     navigate('/home')
                 }}
                 actions={[
