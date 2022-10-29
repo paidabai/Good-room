@@ -3,6 +3,7 @@ import {BASE_URL} from "../utils/constants";
 import jsonp from "jsonp";
 
 const KEY = '93887104dbfceff1377e485d50b4e818'
+const LatitudeAndLongitude_URL = 'http://47.109.41.165:3399'
 
 // 轮播图
 export const reqSwiper = () => axios(`${BASE_URL}/home/swiper`,{})
@@ -24,3 +25,6 @@ export const reqHotCity = () => axios(`${BASE_URL}/area/hot`,{})
 
 // 获取城市列表(type: 1 表示获取所有城市数据 2 表示城市下区的数据)
 export const reqCityList = (type) => axios(`${BASE_URL}/area/city?level=${type}`,{})
+
+// 获取城市的经纬度信息
+export const reqCityLatitudeAndLongitude = (city) => axios(`${LatitudeAndLongitude_URL}/api?address=${city}&key=${KEY}`)

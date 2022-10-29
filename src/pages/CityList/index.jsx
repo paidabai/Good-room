@@ -1,11 +1,13 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Modal, NavBar} from "antd-mobile";
+import {Modal} from "antd-mobile";
 import {useLocation, useNavigate} from "react-router-dom";
 import {reqCityList, reqHotCity} from "../../api";
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import List from 'react-virtualized/dist/commonjs/List';
 import { AiOutlineFire } from "react-icons/ai";
 import './index.css'
+import NavHeader from "../../components/NavHeader";
+import {HOUSE_CITY} from '../../utils/constants'
 
 function CityList(props) {
     // 城市列表
@@ -22,8 +24,6 @@ function CityList(props) {
     const TITLE_HEIGHT = 30
     // 城市名高度
     const CITY_HEIGHT = 45
-    // 有房源的城市
-    const HOUSE_CITY = ['北京','深圳','广州','上海']
 
     // 使用路由跳转
     const navigate = useNavigate()
@@ -31,21 +31,15 @@ function CityList(props) {
     // 获取路由传参的城市
     const {state:{city}} = useLocation()
 
-    // 返回到home
-    const backHome = (value) => {
-        navigate(value,{state:{city}})
-    }
-
     // 选择了城市后返回home传当前选择的城市
     const choiceCity = (value,city) => {
         if (HOUSE_CITY.indexOf(city) !== -1) {
-            navigate(value,{state:{city}})
+            navigate(value)
+            localStorage.setItem('city', `${city}`)
         } else {
             setVisible(true)
         }
     }
-
-
 
     // 格式化城市列表
     const formatCityData = list => {
@@ -171,7 +165,7 @@ function CityList(props) {
 
     return (
         <div className='cityList'>
-            <NavBar onBack={() => {backHome('/home')}} className='cityListBar'>城市选择</NavBar>
+            <NavHeader>城市选择</NavHeader>
             <AutoSizer>
                 {
                     ({ width, height }) => (

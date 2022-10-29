@@ -7,7 +7,7 @@ import icon1 from '../../../assets/icon/Household.png'
 import icon2 from '../../../assets/icon/peoples.png'
 import icon3 from '../../../assets/icon/kehuditu.png'
 import icon4 from '../../../assets/icon/house-add.png'
-import {useLocation, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {CaretDownOutlined, SearchOutlined} from "@ant-design/icons";
 import { RiRoadMapLine } from "react-icons/ri";
 
@@ -23,13 +23,8 @@ function Index(props) {
     const [locations, setLocations] = useState('')
     // 城市
     const [city, setCity] = useState('')
-    // 选择的城市
-    const [choiceCity, setChoiceCity] = useState('')
     // 使用路由跳转
     const navigate = useNavigate()
-
-    // 路由传的参数
-    const state = useLocation().state
 
     // 点击location选择位置后的路由跳转
     const activeHouseList = (value) => {
@@ -168,17 +163,13 @@ function Index(props) {
         }
     },[locations])
 
+    //
+    const newChoseCity = localStorage.getItem('city')
+
     // 地理位置改变调用获取城市
     useEffect(() => {
         getCity()
     },[locations,getCity])
-
-    // 获取选择的城市
-    useEffect(() => {
-        if (state) {
-            setChoiceCity(state.city)
-        }
-    },[state])
 
     // 将要挂载时获取轮播图/租房小组/最新资讯
     useEffect(() => {
@@ -192,7 +183,7 @@ function Index(props) {
             <div className='search'>
                 <div className='search-box'>
                     <div className='location' onClick={() => {activeHouseList('/citylist')}}>
-                        <span className='name'>{state === null ? city : choiceCity}</span>
+                        <span className='name'>{newChoseCity ? newChoseCity : city}</span>
                         <CaretDownOutlined />
                     </div>
                     <div className='from' onClick={() => {activeSearch('/search')}}>
