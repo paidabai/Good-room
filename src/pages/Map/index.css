@@ -20,9 +20,11 @@
     width: 100vw;
     height: 40vh;
     position: fixed;
-    bottom: 0;
+    bottom: -40vh;
     background-color: white;
     z-index: 999;
+    transition: all .5s;
+    overflow: auto;
 }
 
 .houses .house-header {
@@ -39,6 +41,7 @@
 
 .house-body {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
 }
 
@@ -46,6 +49,7 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
+    border-bottom: 2px solid #f6f5f6;
 }
 
 .house-one .house-img{
@@ -54,7 +58,7 @@
 }
 
 .house-one {
-    line-height: 18px;
+    line-height: 17px;
 }
 
 .house-one .title {
@@ -84,3 +88,7 @@
     font-weight: 700;
 }
 
+.house-one .price span{
+    font-size: 12px;
+    font-weight: 500;
+}

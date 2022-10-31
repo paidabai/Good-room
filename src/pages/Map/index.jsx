@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import NavHeader from "../../components/NavHeader";
 import './index.css'
 import {reqArea, reqCityLatitudeAndLongitude, reqHouses} from "../../api";
-import {HOUSE_CITY} from "../../utils/constants";
+import {BASE_URL, HOUSE_CITY} from "../../utils/constants";
 import {Modal, SpinLoading} from "antd-mobile";
 import {useNavigate} from "react-router-dom";
 
@@ -22,6 +22,8 @@ function Map(props) {
     const [cityHouses, setCityHouse] = useState([])
     // 路由跳转
     const navigate = useNavigate();
+    //
+    const houses = useRef()
 
     // 高德地图web服务的key
     const MAP_KRY = '766b17108106f2562aa149e5b4b6b3e2'
@@ -64,11 +66,23 @@ function Map(props) {
              if (result.status === 200) {
                  setCityHouse(result.body.list)
                  setVisibleLoading(false)
+                 houses.current.style = 'bottom: 0'
              }
          })
      }
 
      // 遍历房屋
+    const cityHousesItems = cityHouses.map((item) => (
+        <div className='house-one' key={item.houseCode}>
+            <img className='house-img' src={BASE_URL + item.houseImg} alt=""/>
+            <div>
+                <h2 className='title'>{item.title}</h2>
+                <p className='desc'>{item.desc}</p>
+                <p className='tag'>{item.tags[0]}</p>
+                <p className='price'>{item.price} <span>元/月</span></p>
+            </div>
+        </div>
+    ))
 
     useEffect(() => {
         getCityArea(cityMessage)
@@ -167,22 +181,14 @@ function Map(props) {
                 bodyClassName='loading'
                 content= <SpinLoading color='primary' style={{ '--size': '32px' }}/>
             />
-            <div className='houses'>
+            <div className='houses' ref={houses}>
                 <div className='house'>
                     <div className='house-header'>
                         <p>房屋列表</p>
                         <p>更多房源</p>
                     </div>
                     <div className='house-body'>
-                        <div className='house-one'>
-                            <img className='house-img' src='http://47.109.41.165:8989/newImg/7bj63hd2c.jpg' alt=""/>
-                            <div>
-                                <h2 className='title'>复兴门外大街 2室1厅 10000元</h2>
-                                <p className='desc'>二室/66/南/复兴门外大街</p>
-                                <p className='tag'>近地铁</p>
-                                <p className='price'>10000 <span>元/月</span></p>
-                            </div>
-                        </div>
+                        {cityHousesItems}
                     </div>
                 </div>
             </div>
