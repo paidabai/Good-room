@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Grid, Swiper} from "antd-mobile";
 import './index.css'
-import {reqCity, reqGroups, reqNews, reqSwiper} from "../../../api";
+import {reqCity, reqCityMessage, reqGroups, reqNews, reqSwiper} from "../../../api";
 import {BASE_URL} from "../../../utils/constants";
 import icon1 from '../../../assets/icon/Household.png'
 import icon2 from '../../../assets/icon/peoples.png'
@@ -21,7 +21,7 @@ function Index(props) {
     const [news, setNews] = useState([])
     // 经纬度
     const [locations, setLocations] = useState('')
-    // 城市
+    // 定位城市
     const [city, setCity] = useState('')
     // 使用路由跳转
     const navigate = useNavigate()
@@ -163,13 +163,26 @@ function Index(props) {
         }
     },[locations])
 
-    //
+    // 获取选择的城市
     const newChoseCity = localStorage.getItem('city')
+
+    // 获取当前的城市信息
+    const getCityMessage = useCallback(() => {
+        reqCityMessage(newChoseCity).then((value) => {
+            const result = value.data
+            if (result.status === 200) {
+                // 把城市信息保存在本地
+                localStorage.setItem('value', result.body.value)
+            }
+
+        })
+    },[newChoseCity])
 
     // 地理位置改变调用获取城市
     useEffect(() => {
         getCity()
-    },[locations,getCity])
+        getCityMessage()
+    },[locations,getCity,getCityMessage])
 
     // 将要挂载时获取轮播图/租房小组/最新资讯
     useEffect(() => {
@@ -177,6 +190,7 @@ function Index(props) {
         getGroups()
         getNews()
     },[])
+
     return (
         <div>
             {/*顶部搜索*/}

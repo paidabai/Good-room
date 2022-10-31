@@ -28,3 +28,12 @@ export const reqCityList = (type) => axios(`${BASE_URL}/area/city?level=${type}`
 
 // 获取城市的经纬度信息
 export const reqCityLatitudeAndLongitude = (city) => axios(`${LatitudeAndLongitude_URL}/api?address=${city}&key=${KEY}`)
+
+// 获取城市信息
+export const reqCityMessage = (name) => axios(`${BASE_URL}/area/info?name=${name}`, {})
+
+// 获取房源数据
+export const reqArea = (id) => axios(`${BASE_URL}/area/map?id=${id}`, {})
+
+// 获取当前地区的房屋
+export const reqHouses = (cityId) => axios(`${BASE_URL}/houses?cityId=${cityId}`,{})

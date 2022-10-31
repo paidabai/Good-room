@@ -2,9 +2,9 @@ import React, {useCallback, useEffect, useState} from 'react';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import NavHeader from "../../components/NavHeader";
 import './index.css'
-import {reqCityLatitudeAndLongitude} from "../../api";
+import {reqArea, reqCityLatitudeAndLongitude, reqHouses} from "../../api";
 import {HOUSE_CITY} from "../../utils/constants";
-import {Modal} from "antd-mobile";
+import {Modal, SpinLoading} from "antd-mobile";
 import {useNavigate} from "react-router-dom";
 
 function Map(props) {
@@ -12,6 +12,14 @@ function Map(props) {
     const [latitudeAndLongitude, setLatitudeAndLongitude] = useState([])
     // 提示框的状态
     const [visible, setVisible] = useState(false)
+    // 城市房源信息
+    const [cityAreaMap, setCityAreaMap] = useState([])
+    // 加载状态
+    const [visibleLoading, setVisibleLoading] = useState(true)
+    // 地图层级
+    const [zoom, setZoom] = useState(11)
+    // 当前地区的房屋
+    const [cityHouses, setCityHouse] = useState([])
     // 路由跳转
     const navigate = useNavigate();
 
@@ -20,6 +28,9 @@ function Map(props) {
 
     // 当前的城市
     const city = localStorage.getItem('city')
+
+    // 当前的城市信息
+    const cityMessage = localStorage.getItem('value')
 
     // 获取城市经纬度
     const getCityLatitudeAndLongitude = useCallback(() => {
@@ -35,6 +46,34 @@ function Map(props) {
         getCityLatitudeAndLongitude()
     },[getCityLatitudeAndLongitude,city])
 
+    // 获取城市的房源信息
+    const getCityArea = useCallback((cityMessage) => {
+        reqArea(cityMessage).then((value) => {
+            const result = value.data
+            if (result.status === 200) {
+                setVisibleLoading(false)
+                setCityAreaMap(result.body)
+            }
+        })
+    },[])
+
+    // 获取当前地区的房屋
+     const getCityHouses = (cityId) => {
+         reqHouses(cityId).then((value) => {
+             const result = value.data
+             if (result.status === 200) {
+                 setCityHouse(result.body.list)
+                 setVisibleLoading(false)
+             }
+         })
+     }
+
+     // 遍历房屋
+
+    useEffect(() => {
+        getCityArea(cityMessage)
+    },[getCityArea,cityMessage])
+    
     if (latitudeAndLongitude.length !== 0) {
          AMapLoader.load({
             "key": `${MAP_KRY}`,              // 申请好的Web端开发者Key，首次调用 load 时必填
@@ -43,8 +82,8 @@ function Map(props) {
 
         }).then((AMap)=>{
              let map = new AMap.Map('container',{
-                resizeEnable: true,
-                zoom: 11,//级别
+                resizeEnable: true, //使用自定义窗体
+                zoom: zoom,//级别
                 center: latitudeAndLongitude,//中心点坐标
                 viewMode:'3D'//使用3D视图
             });
@@ -52,18 +91,45 @@ function Map(props) {
                 map.addControl(new AMap.Scale())
                 map.addControl(new AMap.ToolBar())
              // 添加文本覆盖物
-             let info = [];
-             info.push("<div class='input-card content-window-card'><div><img style=\"float:left;\" src=\" https://webapi.amap.com/images/autonavi.png \"/></div> ");
-             info.push("<div style=\"padding:7px 0px 0px 0px;\"><h4>高德软件</h4>");
-             info.push("<p class='input-item'>电话 : 010-84107000   邮编 : 100102</p>");
-             info.push("<p class='input-item'>地址 :北京市朝阳区望京阜荣街10号首开广场4层</p></div></div>");
-
-            // 创建 infoWindow 实例
-            let infoWindow = new AMap.InfoWindow({
-                 isCustom: true,  //使用自定义窗体
-                 content: info.join(""),  //传入 dom 对象，或者 html 字符串
-             });
-             infoWindow.open(map, map.getCenter());
+            cityAreaMap.forEach((item) => {
+                const {label, count, coord:{longitude, latitude}} = item
+                // 创建 infoWindow 实例
+                const marker = new AMap.Marker({
+                    isCustom: true,  //使用自定义窗体
+                    // 添加的内容
+                    content: zoom === 15 ? [`
+                        <div id='text' style='height: 10px; padding: 10px;border-radius: 5%; background-color: #21b97a; display: flex; align-items: center; justify-content: center'>
+                            <div style='display: flex;'>
+                                <p style='text-align: center; white-space: nowrap'>${label}</p>
+                                <p style='text-align: center; white-space: nowrap; margin-left: 10px'>${count}套</p>
+                            </div>
+                        </div>
+                    `]:[`
+                        <div id='text' style='width: 80px; height: 80px; border-radius: 50%; background-color: #21b97a; display: flex; align-items: center; justify-content: center'>
+                            <div style='display: flex; flex-direction: column;'>
+                                <p style='text-align: center; white-space: nowrap'>${label}</p>
+                                <p style='text-align: center; white-space: nowrap'>${count}套</p>
+                            </div>
+                        </div>
+                    `],
+                    // 添加的位置
+                    position: new AMap.LngLat(longitude, latitude),
+                    // 偏移量
+                    offset: new AMap.Pixel(-35, -35)
+                })
+                marker.setExtData({id: item.value})
+                map.add(marker)
+                marker.on('click', () => {
+                    setVisibleLoading(true)
+                    if (zoom !== 15){
+                        getCityArea(marker.getExtData('id').id)
+                    } else {
+                        getCityHouses(marker.getExtData('id').id)
+                    }
+                    setZoom(map.getZoom() === 11 ? 13 : 15)
+                    setLatitudeAndLongitude(new AMap.LngLat(longitude, latitude))
+                })
+             })
         }).catch(e => {
             console.log(e);
         })
@@ -96,6 +162,30 @@ function Map(props) {
                     },
                 ]}
             />
+            <Modal
+                visible={visibleLoading}
+                bodyClassName='loading'
+                content= <SpinLoading color='primary' style={{ '--size': '32px' }}/>
+            />
+            <div className='houses'>
+                <div className='house'>
+                    <div className='house-header'>
+                        <p>房屋列表</p>
+                        <p>更多房源</p>
+                    </div>
+                    <div className='house-body'>
+                        <div className='house-one'>
+                            <img className='house-img' src='http://47.109.41.165:8989/newImg/7bj63hd2c.jpg' alt=""/>
+                            <div>
+                                <h2 className='title'>复兴门外大街 2室1厅 10000元</h2>
+                                <p className='desc'>二室/66/南/复兴门外大街</p>
+                                <p className='tag'>近地铁</p>
+                                <p className='price'>10000 <span>元/月</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

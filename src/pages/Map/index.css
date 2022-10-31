@@ -6,3 +6,81 @@
     width: 100vw;
     height: calc(100vh - 45px);
 }
+
+.loading {
+    width: 25%;
+    height: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 110px;
+}
+
+.houses{
+    width: 100vw;
+    height: 40vh;
+    position: fixed;
+    bottom: 0;
+    background-color: white;
+    z-index: 999;
+}
+
+.houses .house-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    background-color: #ececec;
+}
+
+.houses .house-header p:first-child{
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.house-body {
+    display: flex;
+    justify-content: center;
+}
+
+.house-one{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.house-one .house-img{
+    width: 120px;
+    margin-right: 15px;
+}
+
+.house-one {
+    line-height: 18px;
+}
+
+.house-one .title {
+    font-size: 16px;
+    width: 220px;
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.house-one .desc {
+    font-weight: 200;
+    font-size: 12px;
+}
+
+.house-one .tag {
+    display: inline-block;
+    background-color: aquamarine;
+    padding: 2px;
+}
+
+.house-one .price {
+    margin-top: 3px;
+    font-size: 16px;
+    color: #be3030;
+    font-weight: 700;
+}
+
