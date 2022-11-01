@@ -6,7 +6,6 @@
 .body {
   height: 100vh;
   flex: 1;
-  display: flex;
   padding-bottom: 50px;
 }
 

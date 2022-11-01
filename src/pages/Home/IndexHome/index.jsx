@@ -1,16 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Grid, Swiper} from "antd-mobile";
 import './index.css'
-import {reqCity, reqCityMessage, reqGroups, reqNews, reqSwiper} from "../../../api";
+import {reqArea, reqCity, reqCityMessage, reqGroups, reqNews, reqSwiper} from "../../../api";
 import {BASE_URL} from "../../../utils/constants";
 import icon1 from '../../../assets/icon/Household.png'
 import icon2 from '../../../assets/icon/peoples.png'
 import icon3 from '../../../assets/icon/kehuditu.png'
 import icon4 from '../../../assets/icon/house-add.png'
 import {useNavigate} from "react-router-dom";
-import {CaretDownOutlined, SearchOutlined} from "@ant-design/icons";
-import { RiRoadMapLine } from "react-icons/ri";
-
+import SearchHeader from "../../../components/SearchHeader";
 
 function Index(props) {
     // 轮播图
@@ -25,20 +23,6 @@ function Index(props) {
     const [city, setCity] = useState('')
     // 使用路由跳转
     const navigate = useNavigate()
-
-    // 点击location选择位置后的路由跳转
-    const activeHouseList = (value) => {
-        navigate(value,{state:{city}})
-    }
-
-    // 点击搜索地址后的跳转到search
-    const activeSearch = (value) => {
-        navigate(value)
-    }
-    // 点击地图图片后跳转到map
-    const activeMap = (value) => {
-        navigate(value)
-    }
 
     // 设置导航菜单点击后跳转路由地址
     const setRouteActive = (value) => {
@@ -61,6 +45,23 @@ function Index(props) {
             <img src={BASE_URL + img.imgSrc} alt=""/>
         </Swiper.Item>
     ))
+
+    // 当前城市的id
+    const AreaId = localStorage.getItem('value')
+
+    // 获取地区
+    const getArea = useCallback(() => {
+        reqArea(AreaId).then((value) => {
+            const result = value.data
+            if (result.status === 200) {
+                localStorage.setItem('AreaData', JSON.stringify(result.body))
+            }
+        })
+    },[AreaId])
+
+    useEffect(() => {
+        getArea()
+    },[getArea, AreaId])
 
     // 导航菜单数据
     const navs = [
@@ -194,21 +195,7 @@ function Index(props) {
     return (
         <div>
             {/*顶部搜索*/}
-            <div className='search'>
-                <div className='search-box'>
-                    <div className='location' onClick={() => {activeHouseList('/citylist')}}>
-                        <span className='name'>{newChoseCity ? newChoseCity : city}</span>
-                        <CaretDownOutlined />
-                    </div>
-                    <div className='from' onClick={() => {activeSearch('/search')}}>
-                        <SearchOutlined />
-                        <span>请输入小区或地址</span>
-                    </div>
-                    <div className='map-icon' onClick={() => {activeMap('/map')}}>
-                        <RiRoadMapLine />
-                    </div>
-                </div>
-            </div>
+            <SearchHeader>{city}</SearchHeader>
             {/*轮播图*/}
             <Swiper
                 loop= 'true'

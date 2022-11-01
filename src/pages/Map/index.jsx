@@ -152,12 +152,14 @@ function Map(props) {
     useEffect(() => {
         if (HOUSE_CITY.indexOf(city) === -1) {
             setVisible(true)
+            setVisibleLoading(false)
         }
     },[city])
 
     return (
         <div className='map'>
             <NavHeader>地图找房</NavHeader>
+            {/*地图容器*/}
             <div id='container'></div>
 
             {/*没房源城市提醒框*/}

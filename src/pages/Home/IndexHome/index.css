@@ -8,59 +8,59 @@
     user-select: none;
 }
 
-.search {
-    display: flex;
-    justify-content: center;
-}
+/*.search {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*}*/
 
-.search .search-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 20px;
-    z-index: 999;
-}
+/*.search .search-box {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    position: absolute;*/
+/*    top: 20px;*/
+/*    z-index: 999;*/
+/*}*/
 
 
-.search-box .location {
-    width: 65px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-}
+/*.search-box .location {*/
+/*    width: 65px;*/
+/*    height: 30px;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    background-color: white;*/
+/*}*/
 
-.search-box .location:after {
-    content: '';
-    display: block;
-    height: 17px;
-    border-right: 2px solid #e5e5e5;
-    margin-left: 8px;
-}
+/*.search-box .location:after {*/
+/*    content: '';*/
+/*    display: block;*/
+/*    height: 17px;*/
+/*    border-right: 2px solid #e5e5e5;*/
+/*    margin-left: 8px;*/
+/*}*/
 
-.search-box .from {
-    width: 270px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    background-color: white;
-}
+/*.search-box .from {*/
+/*    width: 270px;*/
+/*    height: 30px;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    background-color: white;*/
+/*}*/
 
-.search-box .from span{
-    margin-left: 6px;
-}
+/*.search-box .from span{*/
+/*    margin-left: 6px;*/
+/*}*/
 
-.search-box .map-icon {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    line-height: 35px;
-    color: white;
-    font-size: 22px;
-    margin-left: 6px;
-}
+/*.search-box .map-icon {*/
+/*    width: 30px;*/
+/*    height: 30px;*/
+/*    text-align: center;*/
+/*    line-height: 35px;*/
+/*    color: white;*/
+/*    font-size: 22px;*/
+/*    margin-left: 6px;*/
+/*}*/
 
 .swiper {
     width: 100vw;

@@ -1,0 +1,20 @@
+.confirm {
+    display: flex;
+    height: 40px;
+    border-top: 1px solid #f6f5f6;
+    text-align: center;
+    line-height: 45px;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.confirm .cancel {
+    width: 20vw;
+    color: #00c781;
+}
+
+.confirm .ok {
+    width: 80vw;
+    color: white;
+    background-color: #00c781;
+}
