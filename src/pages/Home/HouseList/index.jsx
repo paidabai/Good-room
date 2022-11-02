@@ -1,35 +1,17 @@
-import React, {useCallback, useEffect} from 'react';
+import React from 'react';
 import SearchHeader from "../../../components/SearchHeader";
 import { AiOutlineLeft } from "react-icons/ai";
 import './index.css'
 import {useNavigate} from "react-router-dom";
 import Filter from "./Filter";
-import {reqCondition} from "../../../api";
-import PubSub from "pubsub-js";
 
 
 function HomeList(props) {
     const navigate = useNavigate();
+    // 返回home页面
     const goHome = () => {
         navigate('/home')
     }
-
-    // 获取当前的城市id
-    const cityId = localStorage.getItem('value')
-
-    // 获取房屋的查询条件
-    const getCondition = useCallback(() => {
-        reqCondition(cityId).then((value) => {
-            const result = value.data
-            if (result.status === 200) {
-                PubSub.publish('result', result);
-            }
-        })
-    },[cityId])
-
-    useEffect(() => {
-        getCondition()
-    },[getCondition])
 
     return (
         <div>
