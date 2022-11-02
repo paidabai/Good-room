@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Grid, Swiper} from "antd-mobile";
 import './index.css'
-import {reqArea, reqCity, reqCityMessage, reqGroups, reqNews, reqSwiper} from "../../../api";
+import {reqCity, reqCityMessage, reqGroups, reqNews, reqSwiper} from "../../../api";
 import {BASE_URL} from "../../../utils/constants";
 import icon1 from '../../../assets/icon/Household.png'
 import icon2 from '../../../assets/icon/peoples.png'
@@ -45,23 +45,6 @@ function Index(props) {
             <img src={BASE_URL + img.imgSrc} alt=""/>
         </Swiper.Item>
     ))
-
-    // 当前城市的id
-    const AreaId = localStorage.getItem('value')
-
-    // 获取地区
-    const getArea = useCallback(() => {
-        reqArea(AreaId).then((value) => {
-            const result = value.data
-            if (result.status === 200) {
-                localStorage.setItem('AreaData', JSON.stringify(result.body))
-            }
-        })
-    },[AreaId])
-
-    useEffect(() => {
-        getArea()
-    },[getArea, AreaId])
 
     // 导航菜单数据
     const navs = [

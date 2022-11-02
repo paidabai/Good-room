@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Tabs} from "antd-mobile";
 import FilterPicker from "../FilterPicker";
 import './index.css'
+import FilterMore from "../FilterMore";
 
 function FilterTitle(props) {
     // 选择激活的选项
@@ -31,31 +32,29 @@ function FilterTitle(props) {
                     }}
                 >
                     <Tabs.Tab title='区域' key='area'>
-                        <FilterPicker getChoseData={value => setChoseData(value)}/>
+                        <FilterPicker getChoseData={value => setChoseData(value)} type={activeKey}/>
                         <div className='confirm'>
                             <p className='cancel' onClick={cancel}>取消</p>
                             <p className='ok' onClick={ok}>确定</p>
                         </div>
                     </Tabs.Tab>
                     <Tabs.Tab title='方式' key='plan'>
-                        <FilterPicker/>
+                        <FilterPicker getChoseData={value => setChoseData(value)} type={activeKey}/>
                         <div className='confirm'>
                             <p className='cancel' onClick={cancel}>取消</p>
                             <p className='ok' onClick={ok}>确定</p>
                         </div>
                     </Tabs.Tab>
                     <Tabs.Tab title='租金' key='price'>
-                        <FilterPicker/>
+                        <FilterPicker getChoseData={value => setChoseData(value)} type={activeKey}/>
                         <div className='confirm'>
                             <p className='cancel' onClick={cancel}>取消</p>
                             <p className='ok' onClick={ok}>确定</p>
                         </div>
                     </Tabs.Tab>
                     <Tabs.Tab title='筛选' key='chose'>
-                        <FilterPicker/>
-                        <div className='confirm'>
-                            <p className='cancel' onClick={cancel}>取消</p>
-                            <p className='ok' onClick={ok}>确定</p>
+                        <div className='chose'>
+                            <FilterMore />
                         </div>
                     </Tabs.Tab>
                 </Tabs>

@@ -1,0 +1,8 @@
+.adm-picker-view-mask {
+    z-index: 0;
+}
+
+.adm-picker-view-column:nth-child(4) {
+    display: none;
+}
+

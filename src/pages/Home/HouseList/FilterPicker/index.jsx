@@ -1,77 +1,45 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {CascadePickerView} from "antd-mobile";
-import {reqArea} from "../../../../api";
+import PubSub from 'pubsub-js'
+import './index.css'
 
 
 function FilterPicker(props) {
-    const [value, setValue] = useState(['区域', '北京'])
+    // 选择的value值
+    const [value, setValue] = useState([])
+    // 需要渲染的数据
+    const [options, setOptions] = useState([])
+    // 选择时的加载的状态
+    const [loading, setLoading] = useState(false)
+    // pubSub数据
+    const [result, setResult] = useState({})
+
 
     // prop获取选中的值
-    const {getChoseData} = props
+    const {getChoseData, type} = props
 
-    // 获取当前城市的地区
-    const AreaData = JSON.parse(localStorage.getItem('AreaData'))
+    console.log(type)
 
-    // 准备格式化后的容器
-    const areaOptions = []
-
-    // 格式化当前城市的地区
-     AreaData.forEach(item => {
-        areaOptions.push({label:item.label, value:item.label, areaId:item.value})
-    })
-
-    // 添加首条数据
-    areaOptions.unshift({label: '不限', value: '不限'})
-
-    // 获取地区信息
-    const getAreaData = (id) => {
-        reqArea(id).then((value) => {
-            const result = value.data
-            if (result.status === 200) {
-                console.log(result)
-            }
+    useEffect(() => {
+        PubSub.subscribe('result', (msg, data) => {
+            setResult(data.body)
         })
-    }
+    },[type])
 
-    console.log(areaOptions)
-    console.log(value[1])
-    areaOptions.map(item => {
-        if (item.value === value[1]){
-           if (item.areaId !== undefined) {
-               setTimeout(() => {
-                   getAreaData(item.areaId)
-               },2000)
-           }
+    useEffect(() => {
+        if (Object.keys(result).length !== 0) {
+            const {area, subway, rentType, price} = result
+            type === 'area' ? setOptions([area, subway]) : type === 'plan' ? setOptions(rentType) : setOptions(price)
         }
-        return ''
-    })
+    },[result, type])
 
-    const options = [
-        {
-            label: '区域',
-            value: '区域',
-            children: areaOptions
-        },
-        {
-            label: '地铁',
-            value: '地铁',
-            children: [
-                {
-                    label: '南京',
-                    value: '南京',
-                },
-                {
-                    label: '苏州',
-                    value: '苏州',
-                },
-            ],
-        },
-    ]
+    console.log('@',options)
 
     return (
         <div>
             <CascadePickerView
                 options={options}
+                loading={loading}
                 value={value}
                 onChange={val => {
                     setValue(val)

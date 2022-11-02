@@ -37,3 +37,6 @@ export const reqArea = (id) => axios(`${BASE_URL}/area/map?id=${id}`, {})
 
 // 获取当前地区的房屋
 export const reqHouses = (cityId) => axios(`${BASE_URL}/houses?cityId=${cityId}`,{})
+
+// 获取房屋的查询条件
+export const reqCondition = (id) => axios(`${BASE_URL}/houses/condition?id=${id}`,{})
