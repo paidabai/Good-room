@@ -1,4 +1,5 @@
 .btn {
     display: flex;
     flex-wrap: nowrap;
+    padding-bottom: 35px;
 }

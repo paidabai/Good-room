@@ -51,21 +51,21 @@ function FilterTitle(props) {
                     }}
                 >
                     <Tabs.Tab title='区域' key='area'>
-                        <FilterPicker getChoseData={value => setChoseData(value)} type={activeKey} result={activeKey === 'area' ? [result.area, result.subway]: ''}/>
+                        <FilterPicker getChoseData={value => setChoseData(value)} result={activeKey === 'area' ? [result.area, result.subway]: ''}/>
                         <div className='confirm'>
                             <p className='cancel' onClick={cancel}>取消</p>
                             <p className='ok' onClick={ok}>确定</p>
                         </div>
                     </Tabs.Tab>
                     <Tabs.Tab title='方式' key='plan'>
-                        <FilterPicker getChoseData={value => setChoseData(value)} type={activeKey} result={activeKey === 'plan' ? result.rentType : ''}/>
+                        <FilterPicker getChoseData={value => setChoseData(value)} result={activeKey === 'plan' ? result.rentType : ''}/>
                         <div className='confirm'>
                             <p className='cancel' onClick={cancel}>取消</p>
                             <p className='ok' onClick={ok}>确定</p>
                         </div>
                     </Tabs.Tab>
                     <Tabs.Tab title='租金' key='price'>
-                        <FilterPicker getChoseData={value => setChoseData(value)} type={activeKey} result={activeKey === 'price' ? result.price : ''}/>
+                        <FilterPicker getChoseData={value => setChoseData(value)} result={activeKey === 'price' ? result.price : ''}/>
                         <div className='confirm'>
                             <p className='cancel' onClick={cancel}>取消</p>
                             <p className='ok' onClick={ok}>确定</p>
@@ -73,7 +73,7 @@ function FilterTitle(props) {
                     </Tabs.Tab>
                     <Tabs.Tab title='筛选' key='chose'>
                         <div className='chose'>
-                            <FilterMore />
+                            <FilterMore result={result}/>
                         </div>
                     </Tabs.Tab>
                 </Tabs>

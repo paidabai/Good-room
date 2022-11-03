@@ -1,20 +1,47 @@
-import React, {useEffect, useRef} from 'react';
-import {Button, Form, Selector} from "antd-mobile";
-import PubSub from 'pubsub-js'
+import React, {useEffect, useRef, useState} from 'react';
+import {Button, Form, Selector, Toast} from "antd-mobile";
 import './index.css'
 
 function FilterMore(props) {
 
-    // 使用ref
+    const [screen, setScreen] = useState({})
+
+    const [characteristic, setCharacteristic] = useState([])
+    const [floor, setFloor] = useState([])
+    const [oriented, setOriented] = useState([])
+    const [roomType, setRoomType] = useState([])
+
     const formRef = useRef()
+    const handler = useRef()
 
     useEffect(() => {
-        PubSub.subscribe('result', (msg, data) => {
-            console.log( msg, data )
+        handler.current = Toast.show({
+            icon: 'loading',
+            content: '加载中…',
+            duration: 0,
+            maskClickable: true,
         })
     },[])
 
+    // 获取props传递的值
+    const {result} = props
+    useEffect(() => {
+        setScreen(result)
+    },[result])
+
+   useEffect(() => {
+       if (screen.characteristic) {
+           const {characteristic, floor, oriented, roomType} = screen
+           setCharacteristic(characteristic)
+           setFloor(floor)
+           setOriented(oriented)
+           setRoomType(roomType)
+           handler.current?.close()
+       }
+   },[screen])
+
     const onFinish = (values) => {
+        console.log(values)
     }
     return (
         <div>
@@ -46,16 +73,32 @@ function FilterMore(props) {
                     </div>
                 }
             >
-                <Form.Header>竖直布局表单</Form.Header>
-                <Form.Item name='favoriteFruits' label='喜爱的水果'>
+                <Form.Item name='roomType' label='户型'>
                     <Selector
                         columns={3}
                         multiple
-                        options={[
-                            { label: '苹果', value: 'apple' },
-                            { label: '橘子', value: 'orange' },
-                            { label: '香蕉', value: 'banana' },
-                        ]}
+                        options={roomType}
+                    />
+                </Form.Item>
+                <Form.Item name='oriented' label='朝向'>
+                    <Selector
+                        columns={3}
+                        multiple
+                        options={oriented}
+                    />
+                </Form.Item>
+                <Form.Item name='floor' label='楼层'>
+                    <Selector
+                        columns={3}
+                        multiple
+                        options={floor}
+                    />
+                </Form.Item>
+                <Form.Item name='characteristic' label='房屋亮点'>
+                    <Selector
+                        columns={3}
+                        multiple
+                        options={characteristic}
                     />
                 </Form.Item>
             </Form>
