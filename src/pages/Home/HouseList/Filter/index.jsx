@@ -3,9 +3,11 @@ import FilterTitle from "../FilterTitle";
 
 function Filter(props) {
 
+    const {setHouseList} = props
+
     return (
         <div>
-            <FilterTitle/>
+            <FilterTitle setHouseList={setHouseList}/>
         </div>
     );
 }

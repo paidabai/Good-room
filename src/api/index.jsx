@@ -40,3 +40,6 @@ export const reqHouses = (cityId) => axios(`${BASE_URL}/houses?cityId=${cityId}`
 
 // 获取房屋的查询条件
 export const reqCondition = (id) => axios(`${BASE_URL}/houses/condition?id=${id}`,{})
+
+// 根据条件查询房屋
+export const reqFindHouse = (params) => axios(`${BASE_URL}/houses`, {params})

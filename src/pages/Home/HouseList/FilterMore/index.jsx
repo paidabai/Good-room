@@ -13,6 +13,8 @@ function FilterMore(props) {
 
     const formRef = useRef()
     const handler = useRef()
+    // 获取props传递的值
+    const {result, closeFilterMore, setMore} = props
 
     useEffect(() => {
         handler.current = Toast.show({
@@ -23,8 +25,7 @@ function FilterMore(props) {
         })
     },[])
 
-    // 获取props传递的值
-    const {result} = props
+
     useEffect(() => {
         setScreen(result)
     },[result])
@@ -41,7 +42,9 @@ function FilterMore(props) {
    },[screen])
 
     const onFinish = (values) => {
-        console.log(values)
+        // 关闭FilterMore的方法
+        closeFilterMore()
+        setMore(values)
     }
     return (
         <div>
@@ -53,22 +56,22 @@ function FilterMore(props) {
                     <div className='btn'>
                         <Button
                             block
-                            type='submit'
-                            color='primary'
-                            size='large'
-                        >
-                            提交
-                        </Button>
-                        <Button
-                            block
-                            color='primary'
+                            color='success'
                             onClick={() => {
                                 formRef.current?.resetFields()
                             }}
                             size='large'
-                            style={{marginLeft: 10}}
                         >
                             重置
+                        </Button>
+                        <Button
+                            block
+                            type='submit'
+                            color='success'
+                            size='large'
+                            style={{marginLeft: 10, width: 750}}
+                        >
+                            确认
                         </Button>
                     </div>
                 }
