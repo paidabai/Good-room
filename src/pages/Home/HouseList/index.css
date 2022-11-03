@@ -16,3 +16,10 @@
     width: 345px;
     margin-left: 40px;
 }
+
+.housesList{
+    width: 100vw;
+    height: 100%;
+    background-color: white;
+    overflow: auto;
+}

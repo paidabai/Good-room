@@ -6,11 +6,13 @@
     line-height: 45px;
     font-weight: 500;
     font-size: 16px;
+    background-color: white;
 }
 
 .confirm .cancel {
     width: 20vw;
     color: #00c781;
+    background-color: white;
 }
 
 .confirm .ok {
@@ -39,4 +41,9 @@
     width: 100vw;
     height: 100vh;
     border-left: 1px solid #eeeeee;
+}
+
+.adm-tabs-content:not(:nth-child(5)){
+    position: absolute;
+    z-index: 999;
 }

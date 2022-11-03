@@ -13,13 +13,14 @@ function HomeList(props) {
     const [houseList, setHouseList] = useState([])
 
     const navigate = useNavigate();
+
     // 返回home页面
     const goHome = () => {
         navigate('/home')
     }
 
     // 遍历房屋信息
-    const cityHousesItems = houseList.map((item) => (
+    const cityHousesItems = (houseList.map((item) => (
         <div className='house-one' key={item.houseCode}>
             <img className='house-img' src={BASE_URL + item.houseImg} alt=""/>
             <div>
@@ -29,7 +30,8 @@ function HomeList(props) {
                 <p className='price'>{item.price} <span>元/月</span></p>
             </div>
         </div>
-    ))
+    )))
+
 
     return (
         <div>
@@ -40,12 +42,8 @@ function HomeList(props) {
                 <SearchHeader className='searchHeader'/>
             </div>
             <Filter setHouseList={setHouseList}/>
-            <div className='houses'>
+            <div className='housesList'>
                 <div className='house'>
-                    <div className='house-header'>
-                        <p>房屋列表</p>
-                        <p>更多房源</p>
-                    </div>
                     <div className='house-body'>
                         {cityHousesItems}
                     </div>

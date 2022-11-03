@@ -23,7 +23,6 @@ function FilterTitle(props) {
     // 获取当前的城市id
     const cityId = localStorage.getItem('value')
     const {setHouseList} = props
-
     // 格式化后的more数据
     const newMore = []
 
@@ -44,6 +43,16 @@ function FilterTitle(props) {
         end: 20
     }
 
+    // 获取条件筛选的房屋
+    const getHouse = () => {
+        reqFindHouse(params).then((value) => {
+            const result = value.data
+            if (result.status === 200) {
+                setHouseList(result.body.list)
+            }
+        })
+    }
+
     // 点击取消，删除选中的激活key
     const cancel = () => {
         setActiveKey('')
@@ -51,9 +60,10 @@ function FilterTitle(props) {
 
     // 点击确认，删除选中的激活key，收集选中的信息
      const ok = () => {
+         console.log(params)
+         getHouse()
          setActiveKey('')
          activeKey === 'area' ? setArea(choseData) : activeKey === 'plan' ? setMode(choseData) : setPrice(choseData)
-         getHouse()
      }
 
      // FilterMore组件确认关闭组件的方法
@@ -72,26 +82,13 @@ function FilterTitle(props) {
         })
     },[cityId])
 
-    // 获取条件筛选的房屋
-    const getHouse = () => {
-        reqFindHouse(params).then((value) => {
-            const result = value.data
-            if (result.status === 200) {
-                setHouseList(result.body.list)
-            }
-        })
-    }
-
     useEffect(() => {
-        // other code
         getHouse()
-        // eslint-disable- next-line react-hooks/exhaustive-deps
     },[])
 
     useEffect(() => {
         getCondition()
     },[getCondition])
-
 
     return (
         <div>
@@ -100,6 +97,7 @@ function FilterTitle(props) {
                     activeKey={activeKey}
                     onChange={(key) => {
                         setActiveKey(key)
+                        getHouse()
                     }}
                 >
                     <Tabs.Tab title='区域' key='area'>
